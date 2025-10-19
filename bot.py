@@ -59,7 +59,7 @@ def main():
         logger.error("BOT_TOKEN не установлен!")
         return
     
-    # Создание приложения
+    # Создание приложения с отключенным job_queue
     application = Application.builder().token(BOT_TOKEN).build()
     
     # Обработчик регистрации
@@ -110,26 +110,20 @@ def main():
         text_message_router
     ))
     
-    # Джобы
-    job_queue = application.job_queue
+    # Временное отключение job queue для обхода ошибки
+    logger.warning("JobQueue временно отключен из-за ошибки weak reference")
     
-    if job_queue is None:
-        logger.warning("JobQueue не инициализирован! Установите: pip install python-telegram-bot[job-queue]")
-    else:
-        # Ежедневный сброс в 20:00 Budapest
-        budapest_time = datetime.now(BUDAPEST_TZ).replace(hour=20, minute=0, second=0)
-        job_queue.run_daily(reset_daily, time=budapest_time.time())
-        
-        # Анонсы каждые 30 минут
-        job_queue.run_repeating(send_announcements, interval=1800, first=10)
-        
-        logger.info("✅ Job queue настроен: daily reset + announcements")
+    # Альтернатива: ручной запуск задач через asyncio
+    # Вместо job queue можно использовать отдельные asyncio задачи
     
     logger.info("🚀 Trixiki Bot запущен!")
     logger.info(f"📊 Админ группа: {ADMIN_GROUP_ID}")
     
     # Запуск polling
-    application.run_polling(allowed_updates=['message', 'callback_query'])
+    application.run_polling(
+        allowed_updates=['message', 'callback_query'],
+        close_loop=False
+    )
 
 
 if __name__ == '__main__':
