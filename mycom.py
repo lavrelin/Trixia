@@ -22,43 +22,44 @@ mycom_history = []
 
 
 async def mycom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Показать информацию о конкурсе MyCom"""
+    """Что такое конкурс 💨MyCom? Показать информацию"""
     user_id = update.effective_user.id
     
     if user_id not in users_db:
-        await update.message.reply_text("Сначала зарегистрируйтесь: /reg")
+        await update.message.reply_text("👨🏼‍💻 Необходимо зарегистрироваться: /reg")
         return
     
     if not mycom_contest['active'] and not mycom_contest['registration']:
         text = (
-            "🧩 КОНКУРС MYCOM\n\n"
-            "💡 Что это?\n"
-            "Динамичный конкурс комментариев, где участники "
-            "комментируют посты друг друга и получают баллы за подтверждённые действия.\n\n"
-            "⏰ Длительность: 120 минут\n"
-            "🎯 Награды победителям!\n\n"
-            "📋 Правила:\n"
-            "• Добавьте 2-4 поста для участия\n"
-            "• Подготовьте комментарии\n"
-            "• Комментируйте посты других\n"
-            "• Подтверждайте полученные комментарии\n\n"
-            "⚠️ За удаление комментариев раньше недели - бан!\n\n"
-            "🔴 Статус: Ожидание следующего конкурса"
-        )
+    "💨 КОНКУРС MYCOM\n\n"
+    "Что это❓\n"
+    "Это конкурс активности, где каждый участник указывает какие свои посты, как нужно комментировать и пишет к ним текст для коммента.\n"
+    "Другие участники делают то же самое — комментируют твои посты, а ты — их.\n\n"
+    "☑️ Цель — собрать больше подтверждённых и актуальных комментариев.\n\n"
+    "🔖 Правила: ставим ❤️ на комментируемый пост\n"
+    "• Приготовь 2–4 ссылки на свои публикации которые нужно прокоментировать\n"
+    "• Напиши три комментария для каждой\n"
+    "• Подтверждай полученные комментарии\n"
+    "• Всё происходит вручную — реально, на выбранных платформах.\n\n"
+    "⚠️ Удаление комментариев раньше недели = бан\n\n"
+    "💥 Продолжительность: 2 часа\n"
+    "🏆 Победители получают награды!\n\n"
+    "🔴 Статус: Ожидание следующего конкурса"
+)
     elif mycom_contest['registration']:
         text = (
-            "🧩 КОНКУРС MYCOM\n\n"
-            "🟡 Регистрация открыта!\n\n"
-            "Используйте /mycomjoin для участия!\n"
-            f"Осталось до старта: {get_time_left(mycom_contest['start_time'])}"
+            "💨 MYCOM\n\n"
+            "📖 Регистрация открыта!\n\n"
+            "❕Команда /mycomjoin для участия!\n"
+            f"☄️ Начало: {get_time_left(mycom_contest['start_time'])}"
         )
     else:  # active
         text = (
-            "🧩 КОНКУРС MYCOM\n\n"
-            "🟢 Конкурс активен!\n\n"
-            f"👥 Участников: {len(mycom_participants)}\n"
-            f"⏰ Осталось: {get_time_left(mycom_contest.get('end_time'))}\n\n"
-            "Используйте /mycomstatus для проверки прогресса"
+            "❕ КОНКУРС MYCOM\n\n"
+            "💨 MyCom активен!\n\n"
+            f"🧑‍🧑‍🧒‍🧒 Участников: {len(mycom_participants)}\n"
+            f"⌚️ Осталось: {get_time_left(mycom_contest.get('end_time'))}\n\n"
+            "Команда /mycomstatus для проверки прогресса"
         )
     
     await update.message.reply_text(text)
@@ -80,7 +81,7 @@ def get_time_left(target_time):
 
 
 async def mycom_join(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Присоединиться к конкурсу"""
+    """💥 Присоединиться"""
     user_id = update.effective_user.id
     
     if user_id not in users_db:
@@ -89,13 +90,13 @@ async def mycom_join(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     if user_id in mycom_banned:
         await update.message.reply_text(
-            "❌ Вы заблокированы в конкурсе MyCom за нарушения!"
+            "👺 Вы заблокированы в конкурсе MyCom👹"
         )
         return
     
     if not mycom_contest['registration']:
         await update.message.reply_text(
-            "❌ Регистрация закрыта! Ожидайте следующего конкурса."
+            "🔒 Регистрация закрыта! Ожидайте следующего конкурса."
         )
         return
     
@@ -114,8 +115,8 @@ async def mycom_join(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }
     
     await update.message.reply_text(
-        f"✅ Вы зарегистрированы!\n\n"
-        f"📝 Отправьте ссылки на свои публикации (до {default_limit}):\n\n"
+        f"🟩 Успешная регистрация\n\n"
+        f"⛓️ Отправьте ссылки на свои публикации (до {default_limit}):\n\n"
         f"Формат:\n"
         f"пост1 https://instagram.com/p/...\n"
         f"пост2 https://threads.net/...\n\n"
@@ -128,17 +129,17 @@ async def mycom_status(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     
     if user_id not in mycom_participants:
-        await update.message.reply_text("Вы не участвуете в конкурсе!")
+        await update.message.reply_text("🤷🏼‍♂️ Вы не участвуете в конкурсе!")
         return
     
     participant = mycom_participants[user_id]
     
     text = (
-        f"📊 ВАШ ПРОГРЕСС\n\n"
-        f"🎯 Баллов: {participant['score']}\n"
-        f"📝 Постов добавлено: {len(participant['posts'])}/{participant['post_limit']}\n"
-        f"💬 Комментариев подготовлено: {sum(len(c) for c in participant['comments'].values())}\n"
-        f"✅ Статус: {'Активен' if participant['active'] else 'Неактивен'}"
+        f"🔥 ВАШ ПРОГРЕСС\n\n"
+        f"▪️ Баллов: {participant['score']}\n"
+        f"◽️ Постов добавлено: {len(participant['posts'])}/{participant['post_limit']}\n"
+        f"🪄 Комментариев подготовлено: {sum(len(c) for c in participant['comments'].values())}\n"
+        f"💚 Статус: {'Активен' if participant['active'] else 'Неактивен'}"
     )
     
     await update.message.reply_text(text)
@@ -156,7 +157,7 @@ async def mycom_top(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reverse=True
     )[:10]
     
-    text = "🏆 РЕЙТИНГ MYCOM\n\n"
+    text = "🏆 MyCom top users\n\n"
     
     for idx, (user_id, data) in enumerate(sorted_participants, 1):
         user = users_db.get(user_id, {})
@@ -185,7 +186,7 @@ async def edit_mycom(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     if len(context.args) < 1:
         await update.message.reply_text(
-            "Использование: /editmycom пост1\n\n"
+            "Команда: /editmycom пост1\n\n"
             "Затем отправьте до 3 комментариев построчно"
         )
         return
@@ -200,12 +201,12 @@ async def edit_mycom(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data['editing_post'] = post_key
     
     await update.message.reply_text(
-        f"📝 Редактирование комментариев для {post_key}\n\n"
+        f"🖋️ Редактирование комментариев для {post_key}\n\n"
         f"Отправьте до 3 комментариев (каждый с новой строки):\n\n"
-        f"Пример:\n"
-        f"Отличный пост! 🔥\n"
-        f"Супер контент!\n"
-        f"Продолжай в том же духе!"
+        f"🤔 FAKECom Пример:\n"
+        f"У тебя невероятно красивые глаза 🤩\n"
+        f"Фотки супер, это ты в каком городе?\n"
+        f"В следующий раз возьми меня с собой😄"
     )
 
 
@@ -237,8 +238,8 @@ async def handle_mycom_post_links(update: Update, context: ContextTypes.DEFAULT_
                     participant['comments'][post_num] = []
     
     await update.message.reply_text(
-        f"✅ Посты добавлены: {len(participant['posts'])}/{participant['post_limit']}\n\n"
-        f"Используйте /editmycom пост1 для добавления комментариев"
+        f"🌃 Посты добавлены: {len(participant['posts'])}/{participant['post_limit']}\n\n"
+        f"✒️ Используйте команду /editmycom пост1 для добавления комментариев"
     )
 
 
@@ -258,8 +259,8 @@ async def handle_mycom_comments(update: Update, context: ContextTypes.DEFAULT_TY
     mycom_participants[user_id]['comments'][post_key] = comments
     
     await update.message.reply_text(
-        f"✅ Комментарии сохранены для {post_key}!\n\n"
-        f"Добавлено: {len(comments)} комментариев"
+        f"💾 Комментарии сохранены для {post_key}!\n\n"
+        f"💻 Добавлено: {len(comments)} комментариев"
     )
     
     del context.user_data['editing_post']
@@ -275,7 +276,7 @@ async def start_mycom_task_distribution(context: ContextTypes.DEFAULT_TYPE):
         try:
             await context.bot.send_message(
                 chat_id=user_id,
-                text="🟢 Конкурс MyCom начался!\n\nСейчас вам будет отправлено первое задание."
+                text="💨 MyCom запущен!🫣\n\nОжидайте первое задание☑️"
             )
             
             # Отправить первое задание
@@ -314,7 +315,7 @@ async def send_mycom_task(user_id: int, context: ContextTypes.DEFAULT_TYPE):
     # Выбрать случайный комментарий
     comments = target_participant['comments'].get(post_key, [])
     if not comments:
-        comment = "Напишите свой комментарий"
+        comment = "Прокомментируйте🙊"
     else:
         comment = random.choice(comments)
     
@@ -330,10 +331,10 @@ async def send_mycom_task(user_id: int, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_message(
             chat_id=user_id,
             text=(
-                f"📋 НОВОЕ ЗАДАНИЕ\n\n"
-                f"👤 Пользователь: @{target_user.get('username', 'unknown')}\n"
-                f"📝 Пост: {post['url']}\n\n"
-                f"💬 Комментарий:\n{comment}\n\n"
+                f"❕ НОВОЕ ЗАДАНИЕ\n\n"
+                f"🙋‍♀️ Пользователь: @{target_user.get('username', 'unknown')}\n"
+                f"⛓️ Пост: {post['url']}\n\n"
+                f"🧑‍🏫 Комментарий:\n{comment}\n\n"
                 f"Оставьте этот комментарий под постом и нажмите 'Отправлено'"
             ),
             reply_markup=InlineKeyboardMarkup(keyboard)
@@ -362,24 +363,24 @@ async def mycom_task_done(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     # Отправить уведомление владельцу поста
     keyboard = [
-        [InlineKeyboardButton("✅ Подтвердить", callback_data=f"mycom_confirm_{user_id}"),
-         InlineKeyboardButton("❌ Отклонить", callback_data=f"mycom_reject_{user_id}")]
+        [InlineKeyboardButton("🔔 Подтвердить", callback_data=f"mycom_confirm_{user_id}"),
+         InlineKeyboardButton("🔕 Отклонить", callback_data=f"mycom_reject_{user_id}")]
     ]
     
     try:
         await context.bot.send_message(
             chat_id=target_user_id,
             text=(
-                f"🔔 Участник @{users_db[user_id]['username']} "
-                f"оставил комментарий на вашем посте ({post_key}).\n\n"
-                f"Подтвердите выполнение:"
+                f"📣 Уведомление от @{users_db[user_id]['username']} "
+                f"🖋️ прокоментировал ваш пост ({post_key}).\n\n"
+                f"🔎 Проверьте и подтвердите :"
             ),
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
         
         await query.edit_message_text(
             "✅ Задание отмечено как выполненное!\n"
-            "Ожидайте подтверждения (до 10 минут)."
+            "▪️ Ожидайте подтверждения (до 10 минут)."
         )
         
         # Автоподтверждение через 10 минут
@@ -406,7 +407,7 @@ async def mycom_confirm(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             await context.bot.send_message(
                 chat_id=executor_id,
-                text="✅ Комментарий подтвержден! +1 балл 🎯"
+                text="✅ MyComментарий подтвержден! +1 балл 🔥"
             )
             
             # Отправить следующее задание
@@ -415,7 +416,7 @@ async def mycom_confirm(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception as e:
             logger.error(f"Error confirming task: {e}")
     
-    await query.edit_message_text("✅ Комментарий подтвержден!")
+    await query.edit_message_text("✅ MyComментарий подтвержден❕")
 
 
 async def mycom_reject(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -440,13 +441,13 @@ async def mycom_reject(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         logger.error(f"Error sending to admin group: {e}")
     
-    await query.edit_message_text("❌ Комментарий отклонен и отправлен на рассмотрение.")
+    await query.edit_message_text("🚔 MyComментарий отклонен и отправлен на рассмотрение.")
 
 
 async def mycom_next(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Запросить следующее задание"""
     query = update.callback_query
-    await query.answer("⏰ Следующее задание через 10 минут")
+    await query.answer("😴 Ожидайте 10 минут")
     
     user_id = update.effective_user.id
     
@@ -457,13 +458,12 @@ async def mycom_next(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     
     await query.edit_message_text(
-        "🔁 Следующее задание придет через 10 минут.\n\n"
-        "Используйте это время для выполнения других заданий!"
+        "🚅 Следующее задание придет через 10 минут.\n\n"
+        "🚝 Приступайте к выполнения других заданий!"
     )
 
-
 async def mycom_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Жалоба на участника"""
+    """Жалоба на 🤬"""
     query = update.callback_query
     await query.answer()
     
@@ -475,13 +475,13 @@ async def mycom_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_id=ADMIN_GROUP_ID,
             text=(
                 f"🚨 ЖАЛОБА В MYCOM\n\n"
-                f"От: @{users_db.get(reporter_id, {}).get('username', 'unknown')}\n"
-                f"На: @{users_db.get(target_user_id, {}).get('username', 'unknown')}\n\n"
-                f"Требуется проверка."
+                f"🤬 От: @{users_db.get(reporter_id, {}).get('username', 'unknown')}\n"
+                f"🫣 На: @{users_db.get(target_user_id, {}).get('username', 'unknown')}\n\n"
+                f"🧑🏽‍⚖️ Расследование."
             )
         )
         
-        await query.edit_message_text("✅ Жалоба отправлена администрации")
+        await query.edit_message_text("🥵 Жалоба проверяется")
         
     except Exception as e:
         logger.error(f"Error sending report: {e}")
@@ -497,7 +497,7 @@ async def auto_confirm_mycom(context: ContextTypes.DEFAULT_TYPE):
         try:
             await context.bot.send_message(
                 chat_id=executor_id,
-                text="✅ Комментарий автоматически подтвержден! +1 балл 🎯"
+                text="☑️ Комментарий автоматически подтвержден❕ +1 балл 🔥"
             )
             
             await send_mycom_task(executor_id, context)
@@ -507,7 +507,7 @@ async def auto_confirm_mycom(context: ContextTypes.DEFAULT_TYPE):
 
 
 async def check_mycom_inactivity(context: ContextTypes.DEFAULT_TYPE):
-    """Проверка неактивных участников"""
+    """🚓 Проверка неактивных участников"""
     if not mycom_contest['active']:
         return
     
@@ -526,14 +526,14 @@ async def check_mycom_inactivity(context: ContextTypes.DEFAULT_TYPE):
             try:
                 await context.bot.send_message(
                     chat_id=user_id,
-                    text="⏰ Вы были исключены из конкурса за неактивность (10 минут)."
+                    text="💤 Вас исключили из конкурса за АФК (10 минут)."
                 )
             except Exception as e:
                 logger.error(f"Error notifying inactive user {user_id}: {e}")
 
 
 async def end_mycom_contest(context: ContextTypes.DEFAULT_TYPE):
-    """Завершение конкурса MyCom"""
+    """🙋‍♀️ Завершение MyCom"""
     mycom_contest['active'] = False
     
     # Сортировка победителей
@@ -544,7 +544,7 @@ async def end_mycom_contest(context: ContextTypes.DEFAULT_TYPE):
     )[:3]
     
     # Составление сообщения с результатами
-    result_text = "🏆 КОНКУРС MYCOM ЗАВЕРШЁН!\n\n"
+    result_text = "💨 MYCOM ЗАВЕРШЁН!\n\n"
     
     for idx, (user_id, data) in enumerate(sorted_participants, 1):
         user = users_db.get(user_id, {})
@@ -605,11 +605,11 @@ async def admin_mycom_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     mycom_contest['registration'] = False
     
     await update.message.reply_text(
-        f"🧩 Новый конкурс MyCom запланирован!\n\n"
-        f"📅 Дата: {today.strftime('%d.%m.%Y')}\n"
+        f"💨 Новый конкурс MyCom запланирован❕\n\n"
+        f"🤍 Когда?: {today.strftime('%d.%m.%Y')}\n"
         f"🕐 Регистрация: {registration_time.strftime('%H:%M')}\n"
-        f"🕐 Старт: {today.strftime('%H:%M')}\n"
-        f"⏱ Длительность: 120 минут"
+        f"🕐 Начало: {today.strftime('%H:%M')}\n"
+        f"⏱ Длительность: Два часа"
     )
     
     # Запланировать открытие регистрации
@@ -651,11 +651,11 @@ async def open_mycom_registration(context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_message(
             chat_id=USER_CHAT_ID,
             text=(
-                f"🧩 РЕГИСТРАЦИЯ НА MYCOM ОТКРЫТА!\n\n"
+                f"📣 РЕГИСТРАЦИЯ НА MYCOM ОТКРЫТА!\n\n"
                 f"🕐 Старт конкурса: {start_time.strftime('%H:%M')}\n"
                 f"⏱ Длительность: 120 минут\n\n"
-                f"Используйте /mycomjoin для участия!\n\n"
-                f"⚠️ За удаление комментариев раньше недели - бан!"
+                f"🖋️ Команда /mycomjoin для участия!\n\n"
+                f"⚠️ За удаление комментариев раньше семи дней - бан 📛"
             )
         )
     except Exception as e:
@@ -666,29 +666,29 @@ async def open_mycom_registration(context: ContextTypes.DEFAULT_TYPE):
         try:
             await context.bot.send_message(
                 chat_id=user_id,
-                text="🧩 Регистрация на конкурс MyCom открыта!\n\nИспользуйте /mycomjoin"
+                text="🔔 Регистрация на MyCom запущена!\n\nИспользуйте /mycomjoin"
             )
         except Exception as e:
             logger.error(f"Error notifying user {user_id}: {e}")
 
 
 async def admin_mycom_postlimit(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Изменить лимит постов участника"""
+    """⚙️ Изменить лимит на добавление постов для юзера"""
     if update.effective_chat.id != ADMIN_GROUP_ID:
         return
     
     if len(context.args) < 2:
-        await update.message.reply_text("Использование: /mycompostlimit @username 1-4")
+        await update.message.reply_text("▪️Команда: /mycompostlimit @username 1-4")
         return
     
     username = context.args[0].replace('@', '')
     try:
         new_limit = int(context.args[1])
         if new_limit < 1 or new_limit > 4:
-            await update.message.reply_text("Лимит должен быть от 1 до 4")
+            await update.message.reply_text("Лимит от 1 до 4")
             return
     except ValueError:
-        await update.message.reply_text("Некорректное значение")
+        await update.message.reply_text("🤬 Внимательней..")
         return
     
     # Найти пользователя
@@ -698,32 +698,32 @@ async def admin_mycom_postlimit(update: Update, context: ContextTypes.DEFAULT_TY
                 mycom_participants[user_id]['post_limit'] = new_limit
                 
                 await update.message.reply_text(
-                    f"✅ Лимит постов для @{username}: {new_limit}"
+                    f"⚙️ Пост Limit для @{username}: {new_limit}"
                 )
                 
                 try:
                     await context.bot.send_message(
                         chat_id=user_id,
-                        text=f"📝 Ваш лимит постов в MyCom изменен на {new_limit}"
+                        text=f"💌 Лимит для добавление постов 💨MyCom теперь {new_limit}"
                     )
                 except Exception as e:
                     logger.error(f"Error notifying user: {e}")
                 
                 return
             else:
-                await update.message.reply_text(f"@{username} не участвует в конкурсе")
+                await update.message.reply_text(f"@{username} 🚩 Не участвует")
                 return
     
-    await update.message.reply_text(f"Пользователь @{username} не найден")
+    await update.message.reply_text(f"🔮 Персонаж @{username} потерян и не найден 🥵")
 
 
 async def admin_mycom_ban(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Заблокировать пользователя в MyCom"""
+    """Забанить 🤬 в 💨MyCom"""
     if update.effective_chat.id != ADMIN_GROUP_ID:
         return
     
     if len(context.args) < 1:
-        await update.message.reply_text("Использование: /mycomban @username")
+        await update.message.reply_text("Юзай: /mycomban @username")
         return
     
     username = context.args[0].replace('@', '')
@@ -737,34 +737,34 @@ async def admin_mycom_ban(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if user_id in mycom_participants:
                     del mycom_participants[user_id]
                 
-                await update.message.reply_text(f"✅ @{username} заблокирован в MyCom")
+                await update.message.reply_text(f"🚗 @{username} забанен для 💨MyCom")
                 
                 try:
                     await context.bot.send_message(
                         chat_id=user_id,
-                        text="❌ Вы заблокированы в конкурсе MyCom за нарушения!"
+                        text="🚩 Вы заблокированы в конкурсе 💨MyCom‼️"
                     )
                 except Exception as e:
                     logger.error(f"Error notifying user: {e}")
                 
                 return
             else:
-                await update.message.reply_text(f"@{username} уже заблокирован")
+                await update.message.reply_text(f"@{username} уже забанен")
                 return
     
-    await update.message.reply_text(f"Пользователь @{username} не найден")
+    await update.message.reply_text(f"Уважаемый @{username} не найден")
 
 
 async def admin_mycom_banlist(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Список заблокированных в MyCom"""
+    """💨MyCom посмотреть БанЛист"""
     if update.effective_chat.id != ADMIN_GROUP_ID:
         return
     
     if not mycom_banned:
-        await update.message.reply_text("Список пуст")
+        await update.message.reply_text("🫗 Пока что пусто")
         return
     
-    text = "🚫 ЗАБЛОКИРОВАННЫЕ В MYCOM:\n\n"
+    text = "🚫 Забанены в 💨MyCom:\n\n"
     
     for user_id in mycom_banned:
         user = users_db.get(user_id, {})
