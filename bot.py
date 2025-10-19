@@ -4,8 +4,6 @@
 import logging
 from datetime import datetime, timedelta
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ConversationHandler
-from telegram import Update
-from telegram.ext import ContextTypes
 
 # Импорты модулей
 from config import BOT_TOKEN, BUDAPEST_TZ, ADMIN_GROUP_ID
@@ -89,7 +87,7 @@ def main():
     application.add_handler(CommandHandler('liketimeon', admin.admin_liketimeon))
     application.add_handler(CommandHandler('liketimeoff', admin.admin_liketimeoff))
     application.add_handler(CommandHandler('giftstart', admin.giftstart))
-    application.add_handler(CommandHandler('mycomadminadd', admin.mycomadminadd))
+    application.add_handler(CommandHandler('mycomadminadd', admin.mycomadminadd))  # НОВОЕ!
     
     # Callback handlers
     application.add_handler(CallbackQueryHandler(callbacks.callback_router))
@@ -115,20 +113,20 @@ def main():
     if job_queue is None:
         logger.warning("JobQueue не инициализирован! Установите: pip install python-telegram-bot[job-queue]")
     else:
-        # Ежедневный сброс в 20:00 Budapest
-        budapest_time = datetime.now(BUDAPEST_TZ).replace(hour=20, minute=0, second=0)
-        job_queue.run_daily(reset_daily, time=budapest_time.time())
-        
-        # Анонсы каждые 30 минут
-        job_queue.run_repeating(send_announcements, interval=1800, first=10)
-        
-        logger.info("✅ Job queue настроен: daily reset + announcements")
+    # Ежедневный сброс в 20:00 Budapest
+    budapest_time = datetime.now(BUDAPEST_TZ).replace(hour=20, minute=0, second=0)
+    job_queue.run_daily(reset_daily, time=budapest_time.time())
     
-    logger.info("🚀 Trixiki Bot запущен!")
-    logger.info(f"📊 Админ группа: {ADMIN_GROUP_ID}")
+    # Анонсы каждые 30 минут
+    job_queue.run_repeating(send_announcements, interval=1800, first=10)
     
-    # Запуск polling
-    application.run_polling(allowed_updates=['message', 'callback_query'])
+    logger.info("✅ Job queue настроен: daily reset + announcements")
+
+logger.info("🚀 Trixiki Bot запущен!")
+logger.info(f"📊 Админ группа: {ADMIN_GROUP_ID}")
+
+# Запуск polling
+application.run_polling(allowed_updates=['message', 'callback_query'])
 
 
 if __name__ == '__main__':
