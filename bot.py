@@ -87,6 +87,49 @@ def main():
     application.add_handler(CommandHandler('liketimeon', admin.admin_liketimeon))
     application.add_handler(CommandHandler('liketimeoff', admin.admin_liketimeoff))
     application.add_handler(CommandHandler('giftstart', admin.giftstart))
+    application.add_handler(CommandHandler('mycomadminadd', admin.mycomadminadd))  # НОВОЕ!
+    
+    # Callback handlers
+    application.add_handler(CallbackQueryHandler(callbacks.callback_router))
+    
+    # Текстовые сообщения (важный порядок!)
+    async def text_message_router(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Маршрутизация текстовых сообщений"""
+        # Сначала проверяем админские MyCom задания
+        if await admin.handle_mycom_admin_input(update, context):
+            return
+        
+        # Затем обычная обработка заданий
+        await tasks.handle_text_message(update, context)
+    
+    application.add_handler(MessageHandler(
+        filters.TEXT & ~filters.COMMAND,
+        text_message_router
+    ))
+    
+    # Джобы
+    job_queue = application.job_queue
+    
+    # Ежедневный сброс в 20:00 Budapest
+    budapest_time = datetime.now(BUDAPEST_TZ).replace(hour=20, minute=0, second=0)
+    job_queue.run_daily(reset_daily, time=budapest_time.time())
+    
+    # Анонсы каждые 30 минут
+    job_queue.run_repeating(send_announcements, interval=1800, first=10)
+    
+    logger.info("🚀 Trixiki Bot запущен!")
+    logger.info(f"📊 Админ группа: {ADMIN_GROUP_ID}")
+    
+    # Запуск polling
+    application.run_polling(allowed_updates=['message', 'callback_query'])
+
+
+if __name__ == '__main__':
+    main()
+(CommandHandler('localboys', admin.admin_localboys))
+    application.add_handler(CommandHandler('liketimeon', admin.admin_liketimeon))
+    application.add_handler(CommandHandler('liketimeoff', admin.admin_liketimeoff))
+    application.add_handler(CommandHandler('giftstart', admin.giftstart))
     
     # Callback handlers
     application.add_handler(CallbackQueryHandler(callbacks.callback_router))
