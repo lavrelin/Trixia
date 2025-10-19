@@ -34,12 +34,12 @@ async def admin_limit(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for user_id, user_data in users_db.items():
         if user_data.get('username') == username:
             user_data['max_limit'] = new_limit
-            await update.message.reply_text(f"✅ Лимит @{username}: {new_limit}")
+            await update.message.reply_text(f"❕ Лимит 🪃 @{username}: {new_limit}")
             
             try:
                 await context.bot.send_message(
                     chat_id=user_id,
-                    text=f"🎉 Ваш лимит изменен на {new_limit}!"
+                    text=f"👨🏼‍💻 Ваш max limit 🪃Триксиков теперь {new_limit}!"
                 )
             except Exception as e:
                 logger.error(f"Error: {e}")
@@ -62,7 +62,7 @@ async def admin_balance(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for user_data in users_db.values():
         if user_data.get('username') == username:
             await update.message.reply_text(
-                f"💰 @{username}:\n{user_data['trixiki']}/{user_data['max_limit']} 🪃"
+                f"💥 @{username}:\n{user_data['trixiki']}/{user_data['max_limit']} 🪃"
             )
             return
     
@@ -88,12 +88,12 @@ async def admin_trixikichange(update: Update, context: ContextTypes.DEFAULT_TYPE
     for user_id, user_data in users_db.items():
         if user_data.get('username') == username:
             user_data['trixiki'] = min(amount, user_data['max_limit'])
-            await update.message.reply_text(f"✅ Баланс @{username}: {user_data['trixiki']}")
+            await update.message.reply_text(f"🏦 Баланс @{username}: {user_data['trixiki']}")
             
             try:
                 await context.bot.send_message(
                     chat_id=user_id,
-                    text=f"💰 Баланс установлен: {user_data['trixiki']} 🪃"
+                    text=f"❕ Баланс установлен: {user_data['trixiki']} 🪃"
                 )
             except Exception as e:
                 logger.error(f"Error: {e}")
@@ -128,7 +128,7 @@ async def admin_trixikiadd(update: Update, context: ContextTypes.DEFAULT_TYPE):
             try:
                 await context.bot.send_message(
                     chat_id=user_id,
-                    text=f"🎁 +{amount} 🪃!"
+                    text=f"💝 +{amount} 🪃!"
                 )
             except Exception as e:
                 logger.error(f"Error: {e}")
@@ -159,7 +159,7 @@ async def admin_localgirls(update: Update, context: ContextTypes.DEFAULT_TYPE):
             except Exception as e:
                 logger.error(f"Error: {e}")
     
-    await update.message.reply_text(f"✅ Отправлено {count} девушкам")
+    await update.message.reply_text(f"📪 Доставлено {count} девушкам")
 
 
 async def admin_localboys(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -184,7 +184,7 @@ async def admin_localboys(update: Update, context: ContextTypes.DEFAULT_TYPE):
             except Exception as e:
                 logger.error(f"Error: {e}")
     
-    await update.message.reply_text(f"✅ Отправлено {count} парням")
+    await update.message.reply_text(f"📬 Доставлено {count} парням")
 
 
 async def admin_liketimeon(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -201,12 +201,12 @@ async def admin_liketimeon(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for user_id, user_data in users_db.items():
         if user_data.get('username') == username:
             user_data['can_create_tasks'] = True
-            await update.message.reply_text(f"✅ @{username} может создавать задания")
+            await update.message.reply_text(f"🟢 @{username} может создавать задания")
             
             try:
                 await context.bot.send_message(
                     chat_id=user_id,
-                    text="✅ Вам разрешено создавать задания!"
+                    text="💚 Вам разрешено создавать задания!"
                 )
             except Exception as e:
                 logger.error(f"Error: {e}")
@@ -229,12 +229,12 @@ async def admin_liketimeoff(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for user_id, user_data in users_db.items():
         if user_data.get('username') == username:
             user_data['can_create_tasks'] = False
-            await update.message.reply_text(f"❌ @{username} не может создавать задания")
+            await update.message.reply_text(f"📛 @{username} не может создавать задания")
             
             try:
                 await context.bot.send_message(
                     chat_id=user_id,
-                    text="❌ Создание заданий запрещено"
+                    text="📛 Создание заданий запрещено"
                 )
             except Exception as e:
                 logger.error(f"Error: {e}")
@@ -257,7 +257,7 @@ async def giftstart(update: Update, context: ContextTypes.DEFAULT_TYPE):
     winners_count = random.randint(1, 3)
     winners = random.sample(daily_users, min(winners_count, len(daily_users)))
     
-    result = "🎁 ПОДАРКИ:\n\n"
+    result = "❤️ Награды:\n\n"
     
     for winner_id in winners:
         user = users_db[winner_id]
@@ -267,7 +267,7 @@ async def giftstart(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             await context.bot.send_message(
                 chat_id=winner_id,
-                text="🎁 Ваш лимит увеличен на +1!"
+                text="⚙️ Ваш лимит Триксиков увеличен на +1!"
             )
         except Exception as e:
             logger.error(f"Error: {e}")
