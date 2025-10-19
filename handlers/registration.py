@@ -18,12 +18,12 @@ async def reg_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     
     if get_user(user_id):
-        await update.message.reply_text("Вы уже зарегистрированы! ✅")
+        await update.message.reply_text("Вы уже зарегистрированы! 📑")
         return ConversationHandler.END
     
     await update.message.reply_text(
-        "📝 РЕГИСТРАЦИЯ\n\n"
-        "Шаг 1/4: Введите ваш Instagram аккаунт\n"
+        "📱 РЕГИСТРАЦИЯ\n\n"
+        "Шаг 1/4: Введите ваш 🟧Instagram аккаунт\n"
         "Формат: @username"
     )
     return REG_INSTAGRAM
@@ -33,12 +33,12 @@ async def reg_instagram(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Получение Instagram"""
     instagram = update.message.text.strip()
     if not instagram.startswith('@'):
-        await update.message.reply_text("❌ Формат: @username\nПопробуйте снова:")
+        await update.message.reply_text("‼️ Формат: @username\nПопробуйте снова:")
         return REG_INSTAGRAM
     
     context.user_data['instagram'] = instagram
     await update.message.reply_text(
-        "Шаг 2/4: Введите ваш Threads аккаунт\n"
+        "Шаг 2/4: Введите ваш 🧵Threads аккаунт\n"
         "Формат: @username"
     )
     return REG_THREADS
@@ -48,14 +48,14 @@ async def reg_threads(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Получение Threads"""
     threads = update.message.text.strip()
     if not threads.startswith('@'):
-        await update.message.reply_text("❌ Формат: @username\nПопробуйте снова:")
+        await update.message.reply_text("‼️ Формат: @username\nПопробуйте снова:")
         return REG_THREADS
     
     context.user_data['threads'] = threads
     
     keyboard = [
-        [InlineKeyboardButton("👨 Мужской", callback_data="gender_m"),
-         InlineKeyboardButton("👩 Женский", callback_data="gender_f")]
+        [InlineKeyboardButton("🦸‍♂️ Мужской", callback_data="gender_m"),
+         InlineKeyboardButton("🦸‍♀️ Женский", callback_data="gender_f")]
     ]
     await update.message.reply_text(
         "Шаг 3/4: Выберите ваш пол:",
@@ -84,7 +84,7 @@ async def reg_age(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         age = int(update.message.text.strip())
         if age < 13 or age > 100:
-            await update.message.reply_text("❌ Возраст: 13-100\nПопробуйте снова:")
+            await update.message.reply_text("🪦 Возраст: 13-100\nПопробуйте снова:")
             return REG_AGE
         
         user_id = update.effective_user.id
@@ -122,10 +122,10 @@ async def reg_age(update: Update, context: ContextTypes.DEFAULT_TYPE):
         create_user(user_id, user_data)
         
         await update.message.reply_text(
-            f"✅ Регистрация завершена!\n\n"
+            f"☑️ Регистрация завершена!\n\n"
             f"🆔 Номер: {user_number}\n"
-            f"👤 {context.user_data['gender']} | {age} лет\n"
-            f"📸 Instagram: {context.user_data['instagram']}\n"
+            f"👩‍❤️‍👨 {context.user_data['gender']} | {age} лет\n"
+            f"🟧 Instagram: {context.user_data['instagram']}\n"
             f"🧵 Threads: {context.user_data['threads']}\n"
             f"🪃 Баланс: {START_TRIXIKI} триксиков\n\n"
             f"🔥 Подпишись на {INSTAGRAM_ACCOUNT} и {THREADS_ACCOUNT}\n"
