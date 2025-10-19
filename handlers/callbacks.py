@@ -63,12 +63,12 @@ async def show_profile(query, context):
     profile_text = (
         f"🌀 ПРОФИЛЬ\n\n"
         f"🆔 Номер: {user['number']}\n"
-        f"👤 {user['gender']} | {user['age']} лет\n"
-        f"📸 Instagram: {user['instagram']}\n"
+        f"🎭 {user['gender']} | {user['age']} лет\n"
+        f"🟧 Instagram: {user['instagram']}\n"
         f"🧵 Threads: {user['threads']}\n\n"
         f"🪃 Триксики: {user['trixiki']}/{user['max_limit']}\n"
         f"💰 Заработано: {user['stats']['total_earned']}\n\n"
-        f"📊 СТАТИСТИКА:\n"
+        f"📈 СТАТИСТИКА:\n"
         f"{format_stats(user['stats'])}\n\n"
         f"🏆 Достижений: {len(user['achievements'])}"
     )
@@ -92,8 +92,8 @@ async def show_trixiki(query, context):
     
     await query.edit_message_text(
         f"🪃 ВАШ БАЛАНС\n\n"
-        f"Текущий: {user['trixiki']} 🪃\n"
-        f"Максимум: {user['max_limit']} 🪃\n\n"
+        f"🏧 Текущий: {user['trixiki']} 🪃\n"
+        f"🏦 Макс лимит: {user['max_limit']} 🪃\n\n"
         f"💡 Используй /daily для бонуса\n"
         f"✨ Выполняй задания для заработка",
         reply_markup=get_user_keyboard()
@@ -110,12 +110,12 @@ async def show_pool(query, context):
     
     if not tasks:
         await query.edit_message_text(
-            "🧊 Пул заданий пуст!",
+            "🪫 Пул заданий пуст!",
             reply_markup=get_user_keyboard()
         )
         return
     
-    text = "🧊 ДОСТУПНЫЕ ЗАДАНИЯ:\n\n"
+    text = "🔋 ДОСТУПНЫЕ ЗАДАНИЯ:\n\n"
     buttons = []
     
     for idx, task in enumerate(tasks, 1):
@@ -139,24 +139,24 @@ async def show_actions(query, context):
     user = get_user(user_id)
     
     if not user or not user.get('can_create_tasks'):
-        await query.edit_message_text("❌ У вас нет доступа к созданию заданий")
+        await query.edit_message_text("📛 У вас нет доступа к созданию заданий")
         return
     
     keyboard = [
         [InlineKeyboardButton("❤️ Like (3🪃)", callback_data="task_like"),
-         InlineKeyboardButton("💬 Comment (4🪃)", callback_data="task_comment")],
-        [InlineKeyboardButton("💬 Special (10🪃)", callback_data="task_special"),
-         InlineKeyboardButton("👥 Follow (5🪃)", callback_data="task_follow")],
+         InlineKeyboardButton("✍️ Comment (4🪃)", callback_data="task_comment")],
+        [InlineKeyboardButton("💻 Special (10🪃)", callback_data="task_special"),
+         InlineKeyboardButton("💚 Follow (5🪃)", callback_data="task_follow")],
         [InlineKeyboardButton("« Назад", callback_data="back_main")]
     ]
     
     await query.edit_message_text(
-        f"❤️ СОЗДАТЬ ЗАДАНИЕ\n\n"
-        f"Баланс: {user['trixiki']}/{user['max_limit']} 🪃\n\n"
-        f"Сегодня создано:\n"
+        f"☑️ СОЗДАТЬ ЗАДАНИЕ\n\n"
+        f"🏦 Баланс: {user['trixiki']}/{user['max_limit']} 🪃\n\n"
+        f"📲 Сегодня создано:\n"
         f"❤️ Лайков: {user['daily_tasks_created']['likes']}/3\n"
-        f"💬 Комментариев: {user['daily_tasks_created']['comments']}/2\n\n"
-        f"Выберите тип:",
+        f"✍️ Комментариев: {user['daily_tasks_created']['comments']}/2\n\n"
+        f"↔️ Выберите тип:",
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
@@ -173,9 +173,9 @@ async def complete_quest(query, context):
     user['trixiki'] = min(user['trixiki'] + reward, user['max_limit'])
     
     await query.edit_message_text(
-        f"✅ Квест выполнен!\n\n"
+        f"🧩 Квест выполнен!\n\n"
         f"+{reward} 🪃\n\n"
-        f"Баланс: {user['trixiki']}/{user['max_limit']}"
+        f"🏦 Баланс: {user['trixiki']}/{user['max_limit']}"
     )
 
 
@@ -199,7 +199,7 @@ async def show_top(query, context):
             key=lambda x: x[1]['stats']['comments_given'],
             reverse=True
         )[:5]
-        title = "💬 ТОП ПО КОММЕНТАРИЯМ"
+        title = "✍️ ТОП ПО КОММЕНТАРИЯМ"
         stat_key = 'comments_given'
     elif category == 'follows':
         sorted_users = sorted(
@@ -207,7 +207,7 @@ async def show_top(query, context):
             key=lambda x: x[1]['stats']['follows_given'],
             reverse=True
         )[:5]
-        title = "👥 ТОП ПО ПОДПИСКАМ"
+        title = "💚 ТОП ПО ПОДПИСКАМ"
         stat_key = 'follows_given'
     else:  # limit
         sorted_users = sorted(
