@@ -4,6 +4,8 @@
 import logging
 from datetime import datetime, timedelta
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ConversationHandler
+from telegram import Update
+from telegram.ext import ContextTypes
 
 # Импорты модулей
 from config import BOT_TOKEN, BUDAPEST_TZ, ADMIN_GROUP_ID
@@ -87,7 +89,7 @@ def main():
     application.add_handler(CommandHandler('liketimeon', admin.admin_liketimeon))
     application.add_handler(CommandHandler('liketimeoff', admin.admin_liketimeoff))
     application.add_handler(CommandHandler('giftstart', admin.giftstart))
-    application.add_handler(CommandHandler('mycomadminadd', admin.mycomadminadd))  # НОВОЕ!
+    application.add_handler(CommandHandler('mycomadminadd', admin.mycomadminadd))
     
     # Callback handlers
     application.add_handler(CallbackQueryHandler(callbacks.callback_router))
@@ -121,39 +123,6 @@ def main():
         job_queue.run_repeating(send_announcements, interval=1800, first=10)
         
         logger.info("✅ Job queue настроен: daily reset + announcements")
-    
-    logger.info("🚀 Trixiki Bot запущен!")
-    logger.info(f"📊 Админ группа: {ADMIN_GROUP_ID}")
-    
-    # Запуск polling
-    application.run_polling(allowed_updates=['message', 'callback_query'])
-
-
-if __name__ == '__main__':
-    main()
-(CommandHandler('localboys', admin.admin_localboys))
-    application.add_handler(CommandHandler('liketimeon', admin.admin_liketimeon))
-    application.add_handler(CommandHandler('liketimeoff', admin.admin_liketimeoff))
-    application.add_handler(CommandHandler('giftstart', admin.giftstart))
-    
-    # Callback handlers
-    application.add_handler(CallbackQueryHandler(callbacks.callback_router))
-    
-    # Текстовые сообщения
-    application.add_handler(MessageHandler(
-        filters.TEXT & ~filters.COMMAND,
-        tasks.handle_text_message
-    ))
-    
-    # Джобы
-    job_queue = application.job_queue
-    
-    # Ежедневный сброс в 20:00 Budapest
-    budapest_time = datetime.now(BUDAPEST_TZ).replace(hour=20, minute=0, second=0)
-    job_queue.run_daily(reset_daily, time=budapest_time.time())
-    
-    # Анонсы каждые 30 минут
-    job_queue.run_repeating(send_announcements, interval=1800, first=10)
     
     logger.info("🚀 Trixiki Bot запущен!")
     logger.info(f"📊 Админ группа: {ADMIN_GROUP_ID}")
