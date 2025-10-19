@@ -1,2 +1,4 @@
-python-telegram-bot==21.0
+python-telegram-bot[job-queue]==21.0
 pytz==2024.1
+psycopg2-binary==2.9.9
+sqlalchemy==2.0.23
