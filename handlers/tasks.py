@@ -26,7 +26,7 @@ async def handle_task_creation(update: Update, context: ContextTypes.DEFAULT_TYP
     
     if user['trixiki'] < cost:
         await query.edit_message_text(
-            f"❌ Недостаточно триксиков!\n"
+            f"🪫 Недостаточно триксиков!\n"
             f"Нужно: {cost} 🪃\nЕсть: {user['trixiki']} 🪃",
             reply_markup=get_user_keyboard()
         )
@@ -34,7 +34,7 @@ async def handle_task_creation(update: Update, context: ContextTypes.DEFAULT_TYP
     
     if user['daily_tasks_created'][limit_key] >= DAILY_LIMITS[task_type]:
         await query.edit_message_text(
-            f"❌ Дневной лимит достигнут!\n"
+            f"🔐 Дневной лимит достигнут!\n"
             f"Создано: {user['daily_tasks_created'][limit_key]}/{DAILY_LIMITS[task_type]}",
             reply_markup=get_user_keyboard()
         )
@@ -47,13 +47,13 @@ async def handle_task_creation(update: Update, context: ContextTypes.DEFAULT_TYP
     }
     
     if task_type == 'like':
-        msg = "📝 Отправьте ссылку на пост Instagram/Threads"
+        msg = "🔗 Отправьте ссылку на пост 🟧Instagram 🧵Threads"
     elif task_type == 'comment':
-        msg = "📝 Отправьте ссылку на пост для комментария"
+        msg = "🔗 Отправьте ссылку на пост для ✍️комментария"
     elif task_type == 'special':
-        msg = "📝 Шаг 1/2: Отправьте ссылку на пост"
+        msg = "🔗 Шаг 1/2: Отправьте ссылку на пост"
     else:  # follow
-        msg = "📝 Отправьте ссылку на профиль для подписки"
+        msg = "🔗 Отправьте ссылку на профиль для подписки"
     
     await query.edit_message_text(msg)
 
@@ -70,12 +70,12 @@ async def handle_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE
             if user:
                 user['usdt_address'] = text
             await update.message.reply_text(
-                f"✅ USDT адрес сохранен!\n\n{text}",
+                f"$USDT адрес сохранен!\n\n{text}",
                 reply_markup=get_user_keyboard()
             )
             context.user_data.clear()
         else:
-            await update.message.reply_text("❌ Некорректный адрес USDT TRC-20")
+            await update.message.reply_text("‼️ Некорректный адрес USDT TRC-20")
         return
     
     # Создание задания
@@ -92,11 +92,11 @@ async def handle_task_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
     link = update.message.text.strip()
     
     if not (link.startswith('https://instagram.com') or link.startswith('https://threads.net')):
-        await update.message.reply_text("❌ Некорректная ссылка!")
+        await update.message.reply_text("😡 Некорректная ссылка!")
         return
     
     if not is_content_safe(link):
-        await update.message.reply_text("❌ Ссылка содержит запрещенный контент!")
+        await update.message.reply_text("🚔 Ссылка содержит запрещенный контент!")
         return
     
     task_data = context.user_data['creating_task']
@@ -105,8 +105,8 @@ async def handle_task_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if task_data['type'] == 'special':
         context.user_data['creating_task']['link'] = link
         await update.message.reply_text(
-            "📝 Шаг 2/2: Напишите комментарий\n\n"
-            "Этот текст будут копировать другие"
+            "🔗 Шаг 2/2: Напишите ✍️комментарий\n\n"
+            "Этот текст будет скопирован на ваш пост"
         )
         return
     
@@ -127,7 +127,7 @@ async def handle_task_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user['daily_tasks_created'][task_data['limit_key']] += 1
     
     await update.message.reply_text(
-        f"✅ Задание создано!\n\n"
+        f"🔰 Задание создано\n\n"
         f"Тип: {task_data['type'].upper()}\n"
         f"Списано: {task_data['cost']} 🪃\n"
         f"Баланс: {user['trixiki']}/{user['max_limit']} 🪃",
@@ -143,11 +143,11 @@ async def handle_special_comment(update: Update, context: ContextTypes.DEFAULT_T
     comment = update.message.text.strip()
     
     if not is_content_safe(comment):
-        await update.message.reply_text("❌ Комментарий содержит запрещенный контент!")
+        await update.message.reply_text("👮‍♂️ Комментарий содержит запрещенный контент‼️")
         return
     
     if len(comment) > 500:
-        await update.message.reply_text("❌ Слишком длинный (макс 500 символов)")
+        await update.message.reply_text("〰️Длинный❗️Limit 500 символов")
         return
     
     task_data = context.user_data['creating_task']
@@ -169,7 +169,7 @@ async def handle_special_comment(update: Update, context: ContextTypes.DEFAULT_T
     user['daily_tasks_created'][task_data['limit_key']] += 1
     
     await update.message.reply_text(
-        f"✅ Special Comment создан!\n\n"
+        f"📗 Special Comment создан!\n\n"
         f"Списано: {task_data['cost']} 🪃\n"
         f"Баланс: {user['trixiki']}/{user['max_limit']} 🪃",
         reply_markup=get_user_keyboard()
@@ -186,32 +186,32 @@ async def show_task_details(query, context):
     task = get_task(task_id)
     
     if not task:
-        await query.edit_message_text("❌ Задание не найдено!")
+        await query.edit_message_text("❗️ Задание не найдено!")
         return
     
     if task['creator_id'] == user_id:
-        await query.edit_message_text("❌ Вы не можете выполнить свое задание!")
+        await query.edit_message_text("😡 Вы не можете выполнить свое задание!")
         return
     
     if not can_interact(user_id, task['creator_id']):
         await query.edit_message_text(
-            "❌ Вы недавно взаимодействовали с этим пользователем!\n"
-            "Подождите 8 часов."
+            "🚗 Вы недавно взаимодействовали с этим пользователем!\n"
+            "Coldown 8 часов."
         )
         return
     
-    text = f"📋 ЗАДАНИЕ #{task_id}\n\n"
+    text = f"❕ ЗАДАНИЕ #{task_id}\n\n"
     text += f"Тип: {task['type'].upper()}\n"
     text += f"Ссылка: {task['link']}\n"
     
     if 'comment' in task:
         text += f"\nКомментарий:\n{task['comment']}\n"
     
-    text += f"\n💰 Награда: {task['reward']} 🪃\n\n"
+    text += f"\n💳 Награда: {task['reward']} 🪃\n\n"
     text += "Выполните задание и нажмите кнопку:"
     
     keyboard = [
-        [InlineKeyboardButton("✅ Выполнено", callback_data=f"done_{task_id}")],
+        [InlineKeyboardButton("☑️ Выполнено", callback_data=f"done_{task_id}")],
         [InlineKeyboardButton("« Назад", callback_data="pool")]
     ]
     
@@ -226,7 +226,7 @@ async def mark_task_done(query, context):
     task = get_task(task_id)
     
     if not task:
-        await query.edit_message_text("❌ Задание не найдено!")
+        await query.edit_message_text("😡 Задание не найдено!")
         return
     
     # Заморозка
@@ -245,19 +245,19 @@ async def mark_task_done(query, context):
     # Уведомление создателю
     executor = get_user(user_id)
     keyboard = [
-        [InlineKeyboardButton("✅ Подтвердить", callback_data=f"confirm_{task_id}"),
-         InlineKeyboardButton("❌ Отклонить", callback_data=f"reject_{task_id}")]
+        [InlineKeyboardButton("🔰 Подтверждаю", callback_data=f"confirm_{task_id}"),
+         InlineKeyboardButton("♦️ Отклоняю", callback_data=f"reject_{task_id}")]
     ]
     
     try:
         await context.bot.send_message(
             chat_id=task['creator_id'],
             text=(
-                f"🔔 ЗАДАНИЕ ВЫПОЛНЕНО\n\n"
-                f"Пользователь: @{executor.get('username', 'unknown')}\n"
-                f"Тип: {task['type'].upper()}\n"
-                f"Награда: {task['reward']} 🪃\n\n"
-                f"⏰ Подтвердите в течение 3 часов"
+                f"🔰 ЗАДАНИЕ ВЫПОЛНЕНО\n\n"
+                f"🧬 Пользователь: @{executor.get('username', 'unknown')}\n"
+                f"🌌 Тип: {task['type'].upper()}\n"
+                f"💝 Награда: {task['reward']} 🪃\n\n"
+                f"🟩 В течении 3 часов нужно подтвердить"
             ),
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
@@ -265,8 +265,8 @@ async def mark_task_done(query, context):
         logger.error(f"Error: {e}")
     
     await query.edit_message_text(
-        "✅ Задание отмечено!\n\n"
-        "⏳ Ожидайте подтверждения (до 3 часов)",
+        "💙 Задание отмечено!\n\n"
+        "💤 Ожидайте подтверждения (до 3 часов)",
         reply_markup=get_user_keyboard()
     )
     
@@ -314,7 +314,7 @@ async def confirm_task(query, context):
         try:
             await context.bot.send_message(
                 chat_id=executor_id,
-                text=f"✅ Задание подтверждено!\n\n+{reward} 🪃"
+                text=f"💚Подтверждено\n\n+{reward} 🪃"
             )
         except Exception as e:
             logger.error(f"Error: {e}")
@@ -322,7 +322,7 @@ async def confirm_task(query, context):
     remove_task(task_id)
     unfreeze_task(task_id)
     
-    await query.edit_message_text("✅ Задание подтверждено!")
+    await query.edit_message_text("Задание 💚Подтверждено!")
 
 
 async def reject_task(query, context):
@@ -331,7 +331,7 @@ async def reject_task(query, context):
     frozen = get_frozen_task(task_id)
     
     if not frozen:
-        await query.edit_message_text("❌ Задание уже обработано!")
+        await query.edit_message_text("🫡 Задание уже обработано!")
         return
     
     executor = get_user(frozen['executor_id'])
@@ -342,17 +342,17 @@ async def reject_task(query, context):
             chat_id=ADMIN_GROUP_ID,
             text=(
                 f"⚠️ СПОРНОЕ ЗАДАНИЕ\n\n"
-                f"Создатель: @{creator.get('username', 'unknown')}\n"
-                f"Исполнитель: @{executor.get('username', 'unknown')}\n"
-                f"Тип: {frozen['task']['type']}\n"
-                f"Ссылка: {frozen['task']['link']}"
+                f"🥵 Создатель: @{creator.get('username', 'unknown')}\n"
+                f"🫣 Исполнитель: @{executor.get('username', 'unknown')}\n"
+                f"🔬 Тип: {frozen['task']['type']}\n"
+                f"⛓️ Ссылка: {frozen['task']['link']}"
             )
         )
     except Exception as e:
         logger.error(f"Error: {e}")
     
     unfreeze_task(task_id)
-    await query.edit_message_text("❌ Отклонено и отправлено админам")
+    await query.edit_message_text("🚗 Отклонено и отправлено админам")
 
 
 async def auto_confirm(context):
@@ -423,7 +423,7 @@ async def check_achievements(user_id: int, context):
         try:
             await context.bot.send_message(
                 chat_id=user_id,
-                text=f"🎉 НОВЫЕ ДОСТИЖЕНИЯ!\n\n{achievement_text}"
+                text=f"🔈 НОВЫЕ ДОСТИЖЕНИЯ!\n\n{achievement_text}"
             )
             
             await context.bot.send_message(
@@ -441,7 +441,7 @@ async def send_task_announcements(context):
     
     recent_tasks = tasks_db[-5:]
     
-    text = "📢 НОВЫЕ ЗАДАНИЯ:\n\n"
+    text = "💙 НОВЫЕ ЗАДАНИЯ:\n\n"
     for idx, task in enumerate(recent_tasks, 1):
         creator = users_db.get(task['creator_id'], {})
         text += f"{idx}. {task['type'].upper()} | {task['reward']} 🪃\n"
