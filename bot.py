@@ -4,6 +4,8 @@
 import logging
 from datetime import datetime, timedelta
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ConversationHandler
+from telegram import Update
+from telegram.ext import ContextTypes
 
 # Импорты модулей
 from config import BOT_TOKEN, BUDAPEST_TZ, ADMIN_GROUP_ID
@@ -39,6 +41,16 @@ async def reset_daily(context):
 async def send_announcements(context):
     """Рассылка анонсов"""
     await tasks.send_task_announcements(context)
+
+
+async def text_message_router(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Маршрутизация текстовых сообщений"""
+    # Сначала проверяем админские MyCom задания
+    if await admin.handle_mycom_admin_input(update, context):
+        return
+    
+    # Затем обычная обработка заданий
+    await tasks.handle_text_message(update, context)
 
 
 def main():
@@ -87,21 +99,12 @@ def main():
     application.add_handler(CommandHandler('liketimeon', admin.admin_liketimeon))
     application.add_handler(CommandHandler('liketimeoff', admin.admin_liketimeoff))
     application.add_handler(CommandHandler('giftstart', admin.giftstart))
-    application.add_handler(CommandHandler('mycomadminadd', admin.mycomadminadd))  # НОВОЕ!
+    application.add_handler(CommandHandler('mycomadminadd', admin.mycomadminadd))
     
     # Callback handlers
     application.add_handler(CallbackQueryHandler(callbacks.callback_router))
     
-    # Текстовые сообщения (важный порядок!)
-    async def text_message_router(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Маршрутизация текстовых сообщений"""
-        # Сначала проверяем админские MyCom задания
-        if await admin.handle_mycom_admin_input(update, context):
-            return
-        
-        # Затем обычная обработка заданий
-        await tasks.handle_text_message(update, context)
-    
+    # Текстовые сообщения
     application.add_handler(MessageHandler(
         filters.TEXT & ~filters.COMMAND,
         text_message_router
@@ -113,17 +116,21 @@ def main():
     if job_queue is None:
         logger.warning("JobQueue не инициализирован! Установите: pip install python-telegram-bot[job-queue]")
     else:
-    # Ежедневный сброс в 20:00 Budapest
-    budapest_time = datetime.now(BUDAPEST_TZ).replace(hour=20, minute=0, second=0)
-    job_queue.run_daily(reset_daily, time=budapest_time.time())
+        # Ежедневный сброс в 20:00 Budapest
+        budapest_time = datetime.now(BUDAPEST_TZ).replace(hour=20, minute=0, second=0)
+        job_queue.run_daily(reset_daily, time=budapest_time.time())
+        
+        # Анонсы каждые 30 минут
+        job_queue.run_repeating(send_announcements, interval=1800, first=10)
+        
+        logger.info("✅ Job queue настроен: daily reset + announcements")
     
-    # Анонсы каждые 30 минут
-    job_queue.run_repeating(send_announcements, interval=1800, first=10)
-    
-    logger.info("✅ Job queue настроен: daily reset + announcements")
     logger.info("🚀 Trixiki Bot запущен!")
     logger.info(f"📊 Админ группа: {ADMIN_GROUP_ID}")
     
+    # Запуск polling
     application.run_polling(allowed_updates=['message', 'callback_query'])
-    if __name__ == '__main__':
+
+
+if __name__ == '__main__':
     main()
