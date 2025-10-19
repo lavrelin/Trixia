@@ -121,13 +121,9 @@ def main():
     job_queue.run_repeating(send_announcements, interval=1800, first=10)
     
     logger.info("✅ Job queue настроен: daily reset + announcements")
-
-logger.info("🚀 Trixiki Bot запущен!")
-logger.info(f"📊 Админ группа: {ADMIN_GROUP_ID}")
-
-# Запуск polling
-application.run_polling(allowed_updates=['message', 'callback_query'])
-
-
-if __name__ == '__main__':
+    logger.info("🚀 Trixiki Bot запущен!")
+    logger.info(f"📊 Админ группа: {ADMIN_GROUP_ID}")
+    
+    application.run_polling(allowed_updates=['message', 'callback_query'])
+    if __name__ == '__main__':
     main()
