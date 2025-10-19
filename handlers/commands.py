@@ -19,16 +19,16 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     if user:
         await update.message.reply_text(
-            f"С возвращением, {update.effective_user.first_name}! 🎉",
+            f"Ты почему так часто пропадаешь, {update.effective_user.first_name}!🙀",
             reply_markup=get_user_keyboard()
         )
     else:
         await update.message.reply_text(
-            "👋 Добро пожаловать в Trixiki Bot!\n\n"
-            "🎯 Обменивайся активностью в Instagram/Threads\n"
-            "🪃 Зарабатывай триксики\n"
-            "🏆 Получай достижения\n\n"
-            "Используй /reg для регистрации!"
+            "🔰 Мы создали способ поднять активность в соц сетях\n\n"
+            "⚧️ Обменивайся активностью в 🟧Instagram и 🧵Threads\n"
+            "🛤️ Трафик от разных живых аккаунтов поднимет ваши охваты\n"
+            "🪃 Зарабатывай триксики, 🏆 Получай достижения\n\n"
+            "📲 Впиши команду /reg для регистрации!"
         )
 
 
@@ -38,13 +38,13 @@ async def daily(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = get_user(user_id)
     
     if not user:
-        await update.message.reply_text("Сначала зарегистрируйтесь: /reg")
+        await update.message.reply_text("❕Сначала зарегистрируйтесь: /reg")
         return
     
     if user['daily_claimed']:
         await update.message.reply_text(
-            "⏰ Вы уже получили ежедневный бонус!\n"
-            "Следующий в 00:00 по Будапешту"
+            "🫙 Вы уже получили ежедневный бонус!\n"
+            "⏹️ Ожидайте следующий"
         )
         return
     
@@ -52,14 +52,14 @@ async def daily(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quest = random.choice(DAILY_QUESTS)
     quest_reward = user['max_limit']
     
-    keyboard = [[InlineKeyboardButton("✅ Выполнил квест", callback_data="quest_done")]]
+    keyboard = [[InlineKeyboardButton("☑️ Выполнил квест", callback_data="quest_done")]]
     
     await update.message.reply_text(
-        f"🎁 ЕЖЕДНЕВНЫЙ БОНУС\n\n"
-        f"Получено: +{base_bonus} 🪃\n\n"
+        f"🙌 ЕЖЕДНЕВНЫЙ БОНУС\n\n"
+        f"🤳🏼 Получено: +{base_bonus} 🪃\n\n"
         f"📋 Квест дня:\n{quest}\n\n"
-        f"🎯 Награда: {quest_reward} 🪃\n\n"
-        f"Выполните квест и нажмите кнопку:",
+        f"💐 Награда: {quest_reward} 🪃\n\n"
+        f"❕ Выполните квест и нажмите кнопку:",
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
     
@@ -72,20 +72,20 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     
     if not get_user(user_id):
-        await update.message.reply_text("Сначала зарегистрируйтесь: /reg")
+        await update.message.reply_text("😡 Сначала зарегистрируйтесь: /reg")
         return
     
     tasks = get_available_tasks(user_id, 10)
     
     if not tasks:
         await update.message.reply_text(
-            "🧊 Пул заданий пуст!\n\n"
-            "Создайте задание через ❤️ Like/Comment/Follow",
+            "🪫 Пул заданий пуст!\n\n"
+            "🐦‍🔥 Создайте задание через ❤️ Like/Comment/Follow",
             reply_markup=get_user_keyboard()
         )
         return
     
-    text = "🧊 ДОСТУПНЫЕ ЗАДАНИЯ:\n\n"
+    text = "🔋 ДОСТУПНЫЕ ЗАДАНИЯ:\n\n"
     buttons = []
     
     for idx, task in enumerate(tasks, 1):
@@ -96,7 +96,6 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"   От: @{creator.get('username', 'unknown')}\n\n"
         )
         buttons.append([InlineKeyboardButton(
-            f"✅ Выполнить #{idx}",
             callback_data=f"dotask_{task['id']}"
         )])
     
@@ -121,16 +120,16 @@ async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 break
         
         if not target_id:
-            await update.message.reply_text("❌ Пользователь не найден")
+            await update.message.reply_text("🔺 Пользователь не найден")
             return
     
     user = get_user(target_id)
     if not user:
-        await update.message.reply_text("❌ Пользователь не найден")
+        await update.message.reply_text("🔺 Пользователь не найден")
         return
     
     text = (
-        f"📊 СТАТИСТИКА @{user.get('username', 'unknown')}\n\n"
+        f"🪬 СТАТИСТИКА @{user.get('username', 'unknown')}\n\n"
         f"{format_stats(user['stats'])}\n\n"
         f"🏆 Достижений: {len(user['achievements'])}\n"
         f"🪃 Лимит: {user['max_limit']}"
@@ -143,8 +142,8 @@ async def top(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Команда /top"""
     keyboard = [
         [InlineKeyboardButton("❤️ Лайки", callback_data="top_likes")],
-        [InlineKeyboardButton("💬 Комментарии", callback_data="top_comments")],
-        [InlineKeyboardButton("👥 Подписки", callback_data="top_follows")],
+        [InlineKeyboardButton("✍️ Комментарии", callback_data="top_comments")],
+        [InlineKeyboardButton("💚 Подписки", callback_data="top_follows")],
         [InlineKeyboardButton("🪃 Лимит", callback_data="top_limit")]
     ]
     
@@ -162,8 +161,8 @@ async def check(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     if len(context.args) < 2:
         await update.message.reply_text(
-            "Использование: /check @username причина\n\n"
-            "Можно отправлять 1 жалобу в час"
+            "🚨 Пожаловаться: /check @username причина\n\n"
+            "💃 Можно отправлять 1 жалобу в час"
         )
         return
     
@@ -173,7 +172,7 @@ async def check(update: Update, context: ContextTypes.DEFAULT_TYPE):
         time_passed = (datetime.now(BUDAPEST_TZ) - last_report).total_seconds()
         if time_passed < 3600:
             minutes_left = int((3600 - time_passed) / 60)
-            await update.message.reply_text(f"⏰ Следующая жалоба через {minutes_left} минут")
+            await update.message.reply_text(f"⌚️ Следующая жалоба через {minutes_left} минут")
             return
     
     username = context.args[0].replace('@', '')
@@ -184,17 +183,17 @@ async def check(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_message(
             chat_id=ADMIN_GROUP_ID,
             text=(
-                f"⚠️ ЖАЛОБА\n\n"
-                f"От: @{reporter.username}\n"
-                f"На: @{username}\n"
-                f"Причина: {reason}"
+                f"🚨 ЖАЛОБА\n\n"
+                f"😡 От: @{reporter.username}\n"
+                f"😎 На: @{username}\n"
+                f"🤦 Причина: {reason}"
             )
         )
         
         user_reports[user_id] = datetime.now(BUDAPEST_TZ)
-        await update.message.reply_text("✅ Жалоба отправлена администрации")
+        await update.message.reply_text("🚁 Жалоба отправлена администрации")
     except Exception as e:
-        await update.message.reply_text("❌ Ошибка отправки")
+        await update.message.reply_text("🔺 Ошибка отправки")
 
 
 async def randompool(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -208,7 +207,7 @@ async def randompool(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tasks = get_available_tasks(user_id, 999)
     
     if not tasks:
-        await update.message.reply_text("🧊 Нет доступных заданий")
+        await update.message.reply_text("📭 Нет доступных заданий")
         return
     
     task = random.choice(tasks)
@@ -253,17 +252,17 @@ async def donate(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from database import donations
     
     keyboard = [
-        [InlineKeyboardButton("🎯 Цель", callback_data="donate_goal")],
-        [InlineKeyboardButton("👥 Донаторы", callback_data="donate_donors")],
+        [InlineKeyboardButton("🔰 Цель", callback_data="donate_goal")],
+        [InlineKeyboardButton("🤑 Донаторы", callback_data="donate_donors")],
         [InlineKeyboardButton("💳 Реквизиты", callback_data="donate_details")],
-        [InlineKeyboardButton("📊 Отчеты", callback_data="donate_reports")]
+        [InlineKeyboardButton("📗 Отчеты", callback_data="donate_reports")]
     ]
     
     await update.message.reply_text(
         f"💳 ДОНАТЫ\n\n"
-        f"Цель: {donations['goal']}\n"
-        f"Собрано: {donations['amount']}\n\n"
-        f"Поддержите развитие проекта!",
+        f"🔰 Цель: 500$ на розыгрыши {donations['goal']}\n"
+        f"📲 Собрано: 0/500$ {donations['amount']}\n\n"
+        f"❕ Временно не активно!",
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
@@ -276,8 +275,8 @@ async def onanons(update: Update, context: ContextTypes.DEFAULT_TYPE):
         announcement_subscribers.append(user_id)
     
     await update.message.reply_text(
-        "✅ Анонсы включены!\n\n"
-        "Вы будете получать уведомления о новых заданиях"
+        "▶️ Анонсы включены!\n\n"
+        "Вы будете уведомлены о новых заданиях"
     )
 
 
@@ -288,41 +287,41 @@ async def offanons(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if user_id in announcement_subscribers:
         announcement_subscribers.remove(user_id)
     
-    await update.message.reply_text("❌ Анонсы отключены")
+    await update.message.reply_text("⏹️ Анонсы отключены")
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Команда /help"""
     help_text = (
-        "📖 СПРАВКА TRIXIKI BOT\n\n"
-        "🎯 ОСНОВНЫЕ:\n"
+        "❕ О ПРОЕКТЕ \n\n"
+        "🔹 ОСНОВНЫЕ:\n"
         "/start - Начало\n"
         "/reg - Регистрация\n"
         "/daily - Ежедневный бонус\n"
         "/profile - Профиль\n"
-        "/trixiki - Баланс\n"
-        "/pool - Задания\n"
+        "/trixiki - Баланс 🪃Триксиков\n"
+        "/pool - Задания от юзеров\n"
         "/randompool - Случайное задание\n\n"
-        "📊 СТАТИСТИКА:\n"
+        "🪬 СТАТИСТИКА:\n"
         "/stats [@user] - Статистика\n"
         "/top - Рейтинг\n\n"
         "💰 ЦЕНЫ:\n"
         "❤️ Like - 3 🪃 (макс 3/день)\n"
-        "💬 Comment - 4 🪃 (макс 2/день)\n"
+        "✍️ Comment - 4 🪃 (макс 2/день)\n"
         "💬 Special - 10 🪃\n"
-        "👥 Follow - 5 🪃\n\n"
-        "🔧 ДОПОЛНИТЕЛЬНО:\n"
+        "💚 Follow - 5 🪃\n\n"
+        "🛠️ ДОПОЛНИТЕЛЬНО:\n"
         "/addusdt - Добавить USDT адрес\n"
         "/donate - Донаты\n"
         "/check @user - Жалоба (1/час)\n"
-        "/onanons - Включить анонсы\n"
-        "/offanons - Отключить анонсы\n\n"
+        "/onanons - Включить pool анонсы\n"
+        "/offanons - Отключить pool анонсы\n\n"
         "⚠️ ПРАВИЛА:\n"
-        "• Не удалять в течение недели\n"
+        "• Не удалять комменты в течение недели\n"
         "• Один человек = один аккаунт\n"
         "• Фейковые аккаунты блокируются\n"
         "• Взаимодействие раз в 8 часов\n\n"
-        f"💬 Чат: https://t.me/c/{str(USER_CHAT_ID)[4:]}/1"
+        f"🙋‍♀️ Чат: https://t.me/c/{str(USER_CHAT_ID)[4:]}/1"
     )
     
     await update.message.reply_text(help_text)
