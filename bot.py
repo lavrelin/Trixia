@@ -110,12 +110,17 @@ def main():
     # Джобы
     job_queue = application.job_queue
     
-    # Ежедневный сброс в 20:00 Budapest
-    budapest_time = datetime.now(BUDAPEST_TZ).replace(hour=20, minute=0, second=0)
-    job_queue.run_daily(reset_daily, time=budapest_time.time())
-    
-    # Анонсы каждые 30 минут
-    job_queue.run_repeating(send_announcements, interval=1800, first=10)
+    if job_queue is None:
+        logger.warning("JobQueue не инициализирован! Установите: pip install python-telegram-bot[job-queue]")
+    else:
+        # Ежедневный сброс в 20:00 Budapest
+        budapest_time = datetime.now(BUDAPEST_TZ).replace(hour=20, minute=0, second=0)
+        job_queue.run_daily(reset_daily, time=budapest_time.time())
+        
+        # Анонсы каждые 30 минут
+        job_queue.run_repeating(send_announcements, interval=1800, first=10)
+        
+        logger.info("✅ Job queue настроен: daily reset + announcements")
     
     logger.info("🚀 Trixiki Bot запущен!")
     logger.info(f"📊 Админ группа: {ADMIN_GROUP_ID}")
