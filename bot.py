@@ -631,7 +631,7 @@ def main():
 
 if __name__ == '__main__':
     main()
-        f"import os
+import os
 import logging
 import random
 import asyncio
